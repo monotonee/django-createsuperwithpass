@@ -1,0 +1,22 @@
+---
+# DO NOT USE IN PRODUCTION.
+# Docker Compose file to create a database instances FOR TESTING ONLY. Sensitive settings are saved
+# in plain text here and service configurations favor convenience over security.
+# DO NOT USE IN PRODUCTION.
+#
+# Recall that MYSQL_ALLOW_EMPTY_PASSWORD allows empty password for root user.
+version: '3'
+services:
+  mariadb:
+    image: mariadb:latest
+    ports:
+      - '127.0.0.1:3306:3306'
+    volumes:
+      - ./configs/docker/mariadb/conf.d:/etc/mysql/conf.d:ro
+      - ./configs/docker/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_PASSWORD=tester
+      - MYSQL_USER=tester
+
+...

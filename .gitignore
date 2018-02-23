@@ -1,0 +1,11 @@
+# Vagrant metadata
+.vagrant
+
+# Ansible
+**/*.retry
+
+# Python
+**/__pycache__
+*.egg-info
+build/
+dist/
