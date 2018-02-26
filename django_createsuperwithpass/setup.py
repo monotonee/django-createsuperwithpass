@@ -13,12 +13,14 @@ See:
 
 """
 
-import os
+import pathlib
 from setuptools import find_packages, setup
 
 
-with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
-    README = readme.read()
+LONG_DESC = None
+readme_path = pathlib.Path(__file__).resolve().with_name('README.rst')
+if readme_path.is_file():
+    LONG_DESC = readme_path.read_text(encoding='utf_8')
 
 
 setup(
@@ -42,7 +44,7 @@ setup(
     },
     license='MIT',
     packages=find_packages(exclude=('tests',)),
-    #  py_modules=['django_forcedfields'],
+    # py_modules=['django_createsuperwithpass'],
     url='https://github.com/monotonee/django-createsuperwithpass',
 
     classifiers=[
@@ -55,8 +57,9 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Site Management'
     ],
     description=(
-        'An override of Django\'s "createsuperuser" management command to allow non-interactive password initialization.'
+        'An override of Django\'s "createsuperuser" management command to allow non-interactive '
+        'superuser password initialization.'
     ),
     keywords='createsuperuser deployment django management password user',
-    long_description=README
+    long_description=LONG_DESC
 )
