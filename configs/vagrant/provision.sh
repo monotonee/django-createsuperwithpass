@@ -25,28 +25,13 @@ src_dir=/vagrant
 echo 'TASK: Set timezone'
 timedatectl set-timezone UTC
 
-# echo 'TASK: Synchronize package databases'
-# pacman -Syy --noconfirm --quiet
-
-# echo 'TASK: Update Arch keyring'
-# pacman -S archlinux-keyring --noconfirm --quiet
-
-# Upgrade the system.
-# Sometimes kernel upgrades require initial ramdisk rebuild to detect devices.
-# See: https://www.archlinux.org/news/ca-certificates-utils-20170307-1-upgrade-requires-manual-intervention/
 echo 'TASK: Full system upgrade'
-# pacman -Syuw --noconfirm --quiet
-# rm /etc/ssl/certs/ca-certificates.crt
-# pacman -Su --noconfirm --quiet
-# mkinitcpio -p linux
 pacman -Syu --noconfirm --quiet
 
 # Install necessary packages.
-# WARNING: This command, in its current form, will reinstall ALL packages if one
-# or more of them is not already installed. pacman will return exit status > 0
-# if one or more package in query was not found.
-# As of 216-03-11, Linux headers are necessary for virtualbox-guest-dkms package
-# in order to build kernel modules for VirtualBox guest additions.
+# pacman will return exit status > 0 if one or more package in query was not found.
+# As of 2016-03-11, Linux headers are necessary for virtualbox-guest-dkms package in order to build
+# kernel modules for VirtualBox guest additions.
 # See: https://www.archlinux.org/packages/community/x86_64/virtualbox-guest-dkms/
 echo 'TASK: Installing explicit packages'
 packages=( base-devel docker git linux-headers tree ${extra_pkgs[@]} )
@@ -63,18 +48,15 @@ sed -i 's/#X11Forwarding no/X11Forwarding yes/' /etc/ssh/sshd_config
 echo 'TASK: Add vagrant user to docker group'
 usermod -aG docker ${default_user}
 
-# Enable Docker
 # Effectively NOOP if already enabled.
 echo 'TASK: Enable Docker Engine daemon at startup'
 systemctl enable docker
 
-# Source .profile it from .bash_profile.
 echo 'TASK: Source .profile from .bash_profile'
-source_profile='[[ -f ~/.profile ]] && . ~/.profile'
+source_profile='[[ -f ~/.profile ]] && source ~/.profile'
 grep -Fxq "${source_profile}" .bash_profile || echo ${source_profile} >> .bash_profile
 
-# Add alias to .bashrc. .bashrc is always present in current Vagrant base image
-# so no need to check it.
+# Add alias to .bashrc. .bashrc is always present in base image so no need to check existence.
 echo 'TASK: Add bash aliases'
 alias_line_la="alias la='LC_COLLATE=C ls -Alh --color --group-directories-first'"
 grep -q "${alias_line_la}" .bashrc || \
@@ -82,12 +64,12 @@ grep -q "${alias_line_la}" .bashrc || \
 
 # Change to project directory on any new interactive terminal session.
 echo 'TASK: Set PWD to project directory'
-cd_cmd="cd /${default_user}"
+cd_cmd="cd ${src_dir}"
 grep -Fxq "${cd_cmd}" .bashrc || echo ${cd_cmd} >> .bashrc
 
 # Prepare to download and install AUR packages.
 # Example: Import mysql-build@oss.oracle.com PGP key for JDBC driver.
-echo 'TASK: Prepare to download AUR packages'
+# echo 'TASK: Prepare to download AUR packages'
 #su ${default_user} -c 'gpg --keyserver pgp.mit.edu --recv 5072E1F5'
 
 # Download AUR resources. Due to complexity of some manual installs, makepkg
