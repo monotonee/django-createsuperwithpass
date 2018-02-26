@@ -44,7 +44,6 @@ setup(
     },
     license='MIT',
     packages=find_packages(exclude=('tests',)),
-    # py_modules=['django_createsuperwithpass'],
     url='https://github.com/monotonee/django-createsuperwithpass',
 
     classifiers=[
