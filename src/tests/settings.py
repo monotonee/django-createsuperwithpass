@@ -11,7 +11,7 @@ SECRET_KEY = 'fake-key'
 
 
 INSTALLED_APPS = [
-    'django_createsuperwithpass',
+    'django_superuser',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'tests'

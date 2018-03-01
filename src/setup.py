@@ -24,7 +24,7 @@ if readme_path.is_file():
 
 
 setup(
-    name='django-createsuperwithpass',
+    name='django-superuser',
     version='0.0.1',
 
     author='monotonee',
@@ -44,8 +44,7 @@ setup(
     },
     license='MIT',
     packages=find_packages(exclude=('tests',)),
-    url='https://github.com/monotonee/django-createsuperwithpass',
-
+    url='https://github.com/monotonee/django-superuser'
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Framework :: Django',
@@ -56,9 +55,8 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Site Management'
     ],
     description=(
-        'An override of Django\'s "createsuperuser" management command to allow non-interactive '
-        'superuser password initialization.'
+        'Utilities for Django superuser management.'
     ),
-    keywords='createsuperuser deployment django management password user',
+    keywords='createsuperuser deployment django management password superuser user',
     long_description=LONG_DESC
 )
