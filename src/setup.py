@@ -44,7 +44,7 @@ setup(
     },
     license='MIT',
     packages=find_packages(exclude=('tests',)),
-    url='https://github.com/monotonee/django-superuser'
+    url='https://github.com/monotonee/django-superuser',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Framework :: Django',
