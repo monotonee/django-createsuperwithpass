@@ -1,0 +1,9 @@
+Add random password generation option with output to stdout?
+
+A wad of obtuse and unecessary code was apparently created for patch 10080. It looks like an
+optparse idiosyncrasy coupled with a very old version of Django. This code desperately needs to be
+cleaned up. Perhaps I'll submit a pull request.
+    See:
+        https://code.djangoproject.com/ticket/10080
+        https://github.com/django/django/blob/master/django/core/management/__init__.py
+        https://github.com/django/django/blob/master/django/core/management/base.py
