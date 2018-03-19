@@ -13,8 +13,7 @@ SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     'django_superuser',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'tests'
+    'django.contrib.contenttypes'
 ]
 
 

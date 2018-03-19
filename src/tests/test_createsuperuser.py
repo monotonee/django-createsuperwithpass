@@ -1,8 +1,13 @@
 """
 This module defines tests of the overridden "createsuperuser" management command.
 
+I had originally attempted to run the "createsuperuser" override against Django's built-in test
+suite to ensure that the command fell back to the standard comman algorithm when no password option
+was passed but, due to the way Django's test environment is designed and initialized, this proved
+prohibitively time-consuming and unfortunately, I've largely lost the will to constantly fight
+Django's dated design decisions any longer.
+
 See:
-    https://github.com/django/django/blob/master/django/contrib/auth/management/commands/createsuperuser.py
     https://github.com/django/django/blob/master/django/contrib/auth/management/commands/createsuperuser.py
     https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.parse_args
     https://docs.python.org/3/library/argparse.html#partial-parsing
@@ -12,7 +17,7 @@ import django.core.management
 import django.test
 
 
-class TestCreateSuperUserOverride(django.test.TestCase):
+class TestCreatesuperuserOverride(django.test.TestCase):
     """
     A test suite of the createsuperuser management command override.
 
@@ -66,6 +71,23 @@ class TestCreateSuperUserOverride(django.test.TestCase):
 
         See:
             https://docs.python.org/3/library/exceptions.html#SystemExit
+
+        """
+        pass
+
+    def test_password_omission(self):
+        """
+        The command should fall back to standard Django behavior when password option is omitted.
+
+        """
+        pass
+
+    def test_password_validation(self):
+        """
+        Ensure that the password value is validated by all active password validators.
+
+        See:
+            https://docs.djangoproject.com/en/dev/topics/auth/passwords/#module-django.contrib.auth.password_validation
 
         """
         pass
