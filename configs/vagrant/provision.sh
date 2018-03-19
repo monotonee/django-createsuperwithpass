@@ -95,7 +95,7 @@ for pkg in ${aur_pkgs[@]}; do
   cd ${abs_dir}
 done
 
-# Project-specific tasks
+# PROJECT-SPECIFIC TASKS
 echo 'TASK: Install Python packages and modules.'
 cd ${src_dir}
 su ${default_user} -c 'make dependencies'
