@@ -22,6 +22,8 @@ lint:
 	pylint --disable=duplicate-code --rcfile=.pylintrc $(PROJECT_MODULES) $(PROJECT_DIR)/tests/*.py
 
 code_tests:
+	# Use the following to put built-in Django tests temporarily on PYTHONPATH.
+	# env PYTHONPATH=$(shell echo ~)/src/django/tests python ...
 	python $(PROJECT_DIR)/manage.py test $(PROJECT_DIR)/tests --verbosity 2
 
 tests: code_tests lint
