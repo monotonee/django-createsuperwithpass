@@ -16,6 +16,7 @@ See:
     https://github.com/django/django/blob/master/django/contrib/auth/management/commands/createsuperuser.py
     https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.parse_args
     https://docs.python.org/3/library/argparse.html#partial-parsing
+    https://docs.djangoproject.com/en/dev/ref/django-admin/#running-management-commands-from-your-code
 
 """
 import io
@@ -57,6 +58,17 @@ class TestInteractiveMode(django.test.TestCase):
         """
         self.stderr.close()
         self.stdout.close()
+
+    def test_exception_no_tty(self):
+        """
+        Ensure that an exception is raised if no I/O available in interactive mode.
+
+        The createsuperuser command defaults to interactive mode but, even if interactive mode is
+        explicitly enabled, an exception will be raised if the command's environment does not
+        support input and output necessary for interactivity.
+
+        """
+        pass
 
     def test_password_option_omitted_prompt(self):
         """
@@ -125,6 +137,13 @@ class TestInteractiveMode(django.test.TestCase):
 
         See:
             https://docs.djangoproject.com/en/dev/topics/auth/passwords/#module-django.contrib.auth.password_validation
+
+        """
+        pass
+
+    def test_username_prompt_string(self):
+        """
+        Test that the correct prompt string is issued for the username value.
 
         """
         pass
