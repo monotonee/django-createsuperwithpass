@@ -168,7 +168,6 @@ class Command(django.contrib.auth.management.commands.createsuperuser.Command):
         username = None
         password = None
 
-        #  super().handle(*args, **options)
         if not options['password']:
             super().handle(*args, **options)
         else:
