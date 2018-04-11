@@ -28,6 +28,7 @@ class InputMock:
         https://docs.python.org/3/reference/datamodel.html#object.__call__
 
     """
+
     def __init__(self, prompt_map):
         """
         Initialize the class instance.
@@ -38,7 +39,18 @@ class InputMock:
                 Essentially, a mapping of input prompts to user responses.
 
         """
-        self.prompt_map = prompt_map
+        self._prompt_map = prompt_map
+        self._prompts_received = set()
+
+    def _get_prompt_response(self, prompt):
+        prompt_response = None
+
+        for prompt_classifier_func, prompt_class_response in self._prompt_map.items():
+            if prompt_classifier_func(prompt):
+                prompt_response = prompt_class_response
+
+        return prompt_response
+
 
     def __call__(self, prompt=None):
         """
@@ -59,7 +71,8 @@ class InputMock:
             https://docs.python.org/3/reference/datamodel.html#object.__call__
 
         """
-        response = self.prompt_map.get(prompt, None)
+        self._prompts_received.add(prompt)
+        response = self._get_prompt_response(prompt)
         if response is None:
             raise ValueError('Mock input for {!r} not found.'.format(prompt))
 

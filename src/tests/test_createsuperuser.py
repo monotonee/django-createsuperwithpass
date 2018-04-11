@@ -17,6 +17,7 @@ See:
     https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.parse_args
     https://docs.python.org/3/library/argparse.html#partial-parsing
     https://docs.djangoproject.com/en/dev/ref/django-admin/#running-management-commands-from-your-code
+    https://docs.djangoproject.com/en/dev/ref/django-admin/#output-redirection
 
 """
 import io
@@ -25,7 +26,8 @@ import unittest.mock
 import django.core.management
 import django.test
 
-from . import utils
+import tests.utils.mocks
+import tests.utils.prompts
 
 
 class TestInteractiveMode(django.test.TestCase):
@@ -59,7 +61,7 @@ class TestInteractiveMode(django.test.TestCase):
         self.stderr.close()
         self.stdout.close()
 
-    def test_exception_no_tty(self):
+    def test_exception_for_no_tty(self):
         """
         Ensure that an exception is raised if no I/O available in interactive mode.
 
@@ -145,8 +147,21 @@ class TestInteractiveMode(django.test.TestCase):
         """
         Test that the correct prompt string is issued for the username value.
 
+        Due to the monolithic way in which the contrib.auth createsuperuser command was written,
+        in order to override even a small part of the command algorithm, one must largely
+        re-implement the algorithm in the overriding command class. The username prompt string is
+        one such implementation and must therefore be tested.
+
         """
-        pass
+        getpass_mock = unittest.mock.MagicMock(side_effect=lambda prompt=None: 'test_pass')
+        input_mock = unittest.mock.MagicMock(side_effect=lambda prompt=None: 'test@localhost')
+        with unittest.mock.patch('builtins.input', new=input_mock):
+            with unittest.mock.patch('getpass.getpass', new=getpass_mock):
+                django.core.management.call_command(
+                    'createsuperuser',
+                    interactive=True,
+                    stdout=self.stdout
+                )
 
 
 class TestNoninteractiveMode(django.test.TestCase):
