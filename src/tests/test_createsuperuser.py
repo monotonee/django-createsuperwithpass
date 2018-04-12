@@ -21,6 +21,7 @@ See:
 
 """
 import io
+import re
 import unittest.mock
 
 import django.core.management
@@ -174,16 +175,20 @@ class TestInteractiveMode(django.test.TestCase):
         one such implementation and must therefore be tested.
 
         """
-        getpass_mock = unittest.mock.MagicMock(side_effect=lambda prompt=None: 'test_pass')
-        input_mock = unittest.mock.MagicMock(side_effect=lambda prompt=None: 'test@localhost')
-        with unittest.mock.patch('getpass.getpass', new=getpass_mock):
-            with unittest.mock.patch('builtins.input', new=input_mock):
-                django.core.management.call_command(
-                    'createsuperuser',
-                    password='test',
-                    interactive=True,
-                    stdout=self.stdout
-                )
+        input_mock = unittest.mock.MagicMock(side_effect=lambda prompt=None: 'test')
+        with unittest.mock.patch('builtins.input', new=input_mock):
+            django.core.management.call_command(
+                'createsuperuser',
+                password='test',
+                email='test@localhost',
+                interactive=True
+            )
+
+            called_with_username_str = False
+            regex = re.compile(r"Username \(leave blank to use '[\w@-]+'\):")
+            for call_record in input_mock.call_args_list:
+                called_with_username_str = regex.match(call_record[0][0])
+            self.assertTrue(called_with_username_str)
 
     def test_username_unique(self):
         """
