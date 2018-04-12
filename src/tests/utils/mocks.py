@@ -51,7 +51,6 @@ class InputMock:
 
         return prompt_response
 
-
     def __call__(self, prompt=None):
         """
         Mimic the built-in input() behavior and return a string for a given prompt.
