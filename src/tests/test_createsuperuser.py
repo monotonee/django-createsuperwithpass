@@ -73,6 +73,17 @@ class TestInteractiveMode(django.test.TestCase):
         """
         pass
 
+    def test_no_exceptions_in_input_loops(self):
+        """
+        Test that no CommandError or other exceptions are raised in input loop.
+
+        Test the username, password, and REQUIRED_FIELDS input loops to ensure that, if an invalid
+        value is received, the execution does not exit over an uncaught exception but instead prints
+        error messages to stderr and continues loop, asking for a new value.
+
+        """
+        pass
+
     def test_password_option_omitted_prompt(self):
         """
         When the password option is omitted, test that password prompt is issued.
@@ -154,13 +165,49 @@ class TestInteractiveMode(django.test.TestCase):
         both None and falsy values.
 
         This is sloppy and unecessary and I have attempted to remove redundant checks and defer
-        validation to the activated user model. Since the contrib.auth system is designed to
+        validation to the configured user model. Since the contrib.auth system is designed to
         accept alternate user models, the user model's username field should alone be responsible
         for validation. If the username can be blank, createsuperuser will not stand in the way.
+
+        Note, however, that under interactive mode, if the received username value is empty, the
+        default value will be used instead. Passing an empty string via a command line option or
+        through call_command() will bypass this.
 
         See:
             https://docs.djangoproject.com/en/dev/ref/forms/validation/
             https://github.com/django/django/blob/master/django/contrib/auth/management/commands/createsuperuser.py
+
+        """
+        pass
+
+    def test_username_default_value(self):
+        """
+        Test that the default username is used when input is empty.
+
+        """
+        pass
+
+    def test_username_must_be_unique(self):
+        """
+        Test that username uniqueness is enforced, when enabled.
+
+        Once again, contrib.auth's createsuperuser command executes what appears to be a redundant
+        check for username uniqueness in the handle() method. If unique=True on the user model's
+        username field, the ORM will raise an IntegrityError when save() is called and also in model
+        validation through the baked-in call to Model.validate_unique().
+
+        In addition, the redundant check appears only to be executed on the username input loop,
+        NOT when a username value is passed through a command line option. This suggests that any
+        IntegrityError or ValidationError are allowed to bubble when the command attempts to save
+        the new superuser. I'm just continually bewildered by contrib.auth's code, design decisions,
+        and lack of comments. The inconsistency in when contrib.auth decides to wrap exceptions in
+        CommandError is confusing.
+
+        Just to be safe, I'm defining this test method to ensure that my refactoring doesn't break
+        anything important.
+
+        See:
+            https://docs.djangoproject.com/en/dev/ref/models/fields/#unique
 
         """
         pass
@@ -190,27 +237,6 @@ class TestInteractiveMode(django.test.TestCase):
                 called_with_username_str = regex.match(call_record[0][0])
             self.assertTrue(called_with_username_str)
 
-    def test_username_unique(self):
-        """
-        Test that username uniqueness is enforced, when enabled.
-
-        Once again, contrib.auth's createsuperuser command executes what appears to be a redundant
-        check for username uniqueness in the handle() method. If unique=True on the user model's
-        username field, the ORM will raise an IntegrityError when save() is called and also in model
-        validation.
-
-        In addition, the redundant check appears only to be executed on the username input loop,
-        NOT when a username value is passed through a command line option. I'm just continually
-        bewildered by contrib.auth's code, design decisions, and lack of comments.
-
-        Just to be safe, I'm defining this test method to ensure that my refactoring doesn't break
-        anything.
-
-        See:
-            https://docs.djangoproject.com/en/dev/ref/models/fields/#unique
-
-        """
-        pass
 
 class TestNoninteractiveMode(django.test.TestCase):
     """
@@ -290,7 +316,7 @@ class TestNoninteractiveMode(django.test.TestCase):
         """
         pass
 
-    def test_username_unique(self):
+    def test_username_must_be_unique(self):
         """
         Test that username uniqueness is enforced, when enabled.
 
