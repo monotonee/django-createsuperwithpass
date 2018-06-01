@@ -1,4 +1,7 @@
 Add random password generation option with output to stdout?
+Break up Command interactive and noninteractive handlers into separate classes?
+Catch IntegrityError in save method? ValidationError as well?
+
 
 A wad of obtuse and unecessary code was apparently created for patch 10080. It looks like an
 optparse idiosyncrasy coupled with a very old version of Django. This code desperately needs to be
@@ -7,3 +10,12 @@ cleaned up. Perhaps I'll submit a pull request.
         https://code.djangoproject.com/ticket/10080
         https://github.com/django/django/blob/master/django/core/management/__init__.py
         https://github.com/django/django/blob/master/django/core/management/base.py
+
+In docs:
+    username validation, including blank and unique, left to field's clean() method. createsuperuser
+        no longer enforces non-empty usernames. Uniqueness check is executed for convenience since
+        model validation requires completed model
+    It does NOT appear that username validation is performed if username is passed via command
+        line option.
+    For validation errors or other exceptions, CommandError shoud be raised for values passed via
+        command line, but simple strings should be output to stderr when in interactive input loop.
